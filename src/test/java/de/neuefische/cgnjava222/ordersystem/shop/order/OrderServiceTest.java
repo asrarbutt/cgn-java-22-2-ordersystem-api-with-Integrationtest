@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 class OrderServiceTest {
 
@@ -17,10 +18,24 @@ class OrderServiceTest {
     @Test
     void addAndGetOrder() {
         //given
-        ProductRepo productRepo = new ProductRepo();
-        ProductService productService = new ProductService(productRepo);
-        OrderRepo orderRepo = new OrderRepo();
+        ProductRepo productRepo = mock(ProductRepo.class);
+       // ProductService productService = new ProductService(productRepo);
+        ProductService productService=mock(ProductService.class);
+        OrderRepo orderRepo = mock(OrderRepo.class);
+
         OrderService orderService = new OrderService(productService, orderRepo);
+        //OrderService orderService=mock(OrderService.class);
+
+
+        when(orderService.getOrder(106)).thenReturn(new Order(
+                106,
+                List.of(
+                        new Product(1, "Apfel"),
+                        new Product(3, "Zitrone"),
+                        new Product(4, "Mandarine")
+                )
+        ));
+
 
         //when
         orderService.addOrder(106, List.of(1, 3, 4));
@@ -43,11 +58,21 @@ class OrderServiceTest {
     @Test
     void addAndListOrders() {
         //given
-        ProductRepo productRepo = new ProductRepo();
-        ProductService productService = new ProductService(productRepo);
-        OrderRepo orderRepo = new OrderRepo();
+        ProductRepo productRepo = mock(ProductRepo.class);
+        ProductService productService = mock(ProductService.class);
+        OrderRepo orderRepo = mock(OrderRepo.class);
         OrderService orderService = new OrderService(productService, orderRepo);
 
+        when(orderService.listOrders()).thenReturn(List.of(
+                new Order(
+                        106,
+                        List.of(
+                                new Product(1, "Apfel"),
+                                new Product(3, "Zitrone"),
+                                new Product(4, "Mandarine")
+                        )
+                )
+        ));
         //when
         orderService.addOrder(106, List.of(1, 3, 4));
         List<Order> actual = orderService.listOrders();
@@ -74,11 +99,14 @@ class OrderServiceTest {
         ProductRepo productRepo = new ProductRepo();
         ProductService productService = new ProductService(productRepo);
         OrderRepo orderRepo = new OrderRepo();
-        OrderService orderService = new OrderService(productService, orderRepo);
+        //OrderService orderService = new OrderService(productService, orderRepo);
+        OrderService orderService=mock(OrderService.class);
+
+        when(orderService.getOrder(107));
 
         //when
         try {
-            orderService.addOrder(106, List.of(999));
+            orderService.addOrder(106, List.of(11));
             Assertions.fail("Expected exception was not thrown");
         } catch (NoSuchElementException e) {
             // perfect, exception was thrown
