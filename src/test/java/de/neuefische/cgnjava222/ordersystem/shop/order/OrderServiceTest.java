@@ -133,9 +133,12 @@ class OrderServiceTest {
         //when
         try {
             orderService.addOrder(106, List.of(11));
-            Assertions.fail("Expected exception was not thrown");
+
+            Assertions.fail("Expected exception was not thrown");//wenn die Exception nicht gelöst wird brechen wir das program hier ab
         } catch (NoSuchElementException e) {
             // perfect, exception was thrown
         }
     }
+
+
 }
