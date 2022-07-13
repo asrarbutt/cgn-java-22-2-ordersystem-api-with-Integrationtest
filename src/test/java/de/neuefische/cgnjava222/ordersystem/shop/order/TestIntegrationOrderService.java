@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -19,17 +20,33 @@ public class TestIntegrationOrderService {
     @Autowired
     private MockMvc mockMvc;
 
+    @DirtiesContext
     @Test
     void addOrderApiTest() throws Exception {
         //Given
         mockMvc
                 //when
                 .perform(post("/api/orders/1").contentType(MediaType.APPLICATION_JSON).content("""
-                        [1,2]""")).andExpect(status().isOk()).andExpect(content().string(""));
+                        [1,2]""")).andExpect(status().isOk());//hier zuende weil wir keinen body erwarten
+
 
 
     }
 
+    @Test
+    void getOrderApiTest() throws Exception {
+        mockMvc
+                .perform(get("/api/orders/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(""));
+    }
+
+
+    @Test
+    void listOrderApiTest() throws Exception {
+        mockMvc.perform(get("/api/orders")).andExpect(status().isOk())
+                .andExpect(content().json("[]"));
+    }
 
 
 }
